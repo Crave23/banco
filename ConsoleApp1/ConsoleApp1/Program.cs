@@ -1,13 +1,13 @@
-﻿using System.Reflection.Metadata.Ecma335;
-using System.Globalization;
+﻿using System.Globalization;
+using System.Reflection.Metadata.Ecma335;
 
-namespace ByteBank1
+namespace bytebank
 {
 
     public class Program
     {
 
-        static void ShowMenu()
+        static void MostrarOpcoes()
         {
             Console.WriteLine("1 - Inserir novo usuário");
             Console.WriteLine("2 - Deletar um usuário");
@@ -50,7 +50,7 @@ namespace ByteBank1
             Console.WriteLine("Conta deletada com sucesso");
         }
 
-        static void ListarTodasAsContas(List<string> cpfs, List<string> titulares, List<double> saldos)
+        static void ListarContas(List<string> cpfs, List<string> titulares, List<double> saldos)
         {
             for (int i = 0; i < cpfs.Count; i++)
             {
@@ -76,63 +76,6 @@ namespace ByteBank1
         static void ApresentarValorAcumulado(List<double> saldos)
         {
             Console.WriteLine($"Total acumulado no banco: {saldos.Sum():F2}");
-            // saldos.Sum(); ou .Agregatte(0.0, (x, y) => x + y)
-        }
-
-        static void ManipularConta(List<string> cpfs, List<string> titulares, List<double> saldos) 
-        {
-            Console.Write("Digite o cpf: ");
-            string cpfParaApresentar = Console.ReadLine();
-            int indexParaApresentar = cpfs.FindIndex(cpf => cpf == cpfParaApresentar);
-
-            if (indexParaApresentar == -1)
-            {
-                Console.WriteLine("Não foi possível apresentar esta Conta");
-                Console.WriteLine("MOTIVO: Conta não encontrada.");
-            }
-
-            ApresentaConta(indexParaApresentar, cpfs, titulares, saldos);
-
-            Console.WriteLine("-----------------");
-            Console.WriteLine("7 - Depositar");
-            Console.WriteLine("8 - Sacar");
-            Console.WriteLine("9 - Transferir");
-            Console.Write("Digite a opção desejada: ");
-            int option = int.Parse(Console.ReadLine());
-
-            Console.WriteLine("-----------------");
-
-            if (option == 7) 
-            {
-                Console.WriteLine("Qual valor a ser Depositado?");
-                Console.Write($"R$: ");
-                double valor = double.Parse(Console.ReadLine());
-
-              
-
-                Console.WriteLine($"Saldo Atual: R$ {saldos}");
-
-            } 
-            if(option == 8)
-            {
-                Console.WriteLine("Qual valor a ser Sacado?");
-                Console.Write($"R$: ");
-                double valor = double.Parse(Console.ReadLine());
-
-            }
-            if (option==9)
-            {
-                Console.WriteLine("Qual valor a ser Transferido?");
-                Console.Write($"R$: ");
-                double valor = double.Parse(Console.ReadLine());
-
-                Console.WriteLine("-----------------");
-
-
-
-
-            }
-
 
         }
 
@@ -140,6 +83,81 @@ namespace ByteBank1
         {
             Console.WriteLine($"CPF = {cpfs[index]} | Titular = {titulares[index]} | Saldo = R${saldos[index]:F2}");
         }
+
+        static void ManipularConta(List<string> cpfs, List<string> titulares, List<string> senhas, List<double> saldos)
+        {
+
+            Console.Write("Digite o cpf: ");
+            string cpfParaApresentar = Console.ReadLine();
+            int indexParaApresentar = cpfs.FindIndex(cpf => cpf == cpfParaApresentar);
+
+            Console.Write("Digite a senha: ");
+            string senhaParaApresentar = Console.ReadLine();
+            int indexSenhaParaApresentar = senhas.FindIndex(senha => senha == senhaParaApresentar);
+
+            if (indexParaApresentar == -1 || indexSenhaParaApresentar == -1)
+            {
+                Console.WriteLine("Não foi possível apresentar esta Conta");
+                Console.WriteLine("MOTIVO: Conta não encontrada ou senha incorreta.");
+                Console.WriteLine("Para retornar ao menu digite 0");
+
+            }
+
+            else 
+            { 
+                Console.WriteLine("--------------------");
+                Console.Write("Para continuar aperte 1: ");
+            }
+
+            int opcao = int.Parse(Console.ReadLine());
+
+            if (opcao != 0)
+            {
+
+
+                Console.WriteLine("--------------------");
+
+                ApresentaConta(indexParaApresentar, cpfs, titulares, saldos);
+
+                Console.WriteLine("--------------------");
+                Console.WriteLine("7 - Depositar");
+                Console.WriteLine("8 - Sacar");
+                Console.WriteLine("9 - Tranferir");
+                Console.WriteLine("0 - Retornar");
+                Console.Write("Digite nova opção desejada: ");
+                int novaopcao = int.Parse(Console.ReadLine());
+
+
+
+
+
+                if (novaopcao == 7)
+                {
+                    Console.WriteLine("Qual valor a ser Depositado?");
+                    Console.Write($"R$: ");
+                    double valor = double.Parse(Console.ReadLine());
+
+                }
+                if (novaopcao == 8)
+                {
+                    Console.WriteLine("Qual valor a ser Sacado?");
+                    Console.Write($"R$: ");
+                    double valor = double.Parse(Console.ReadLine());
+
+                }
+                if (novaopcao == 9)
+                {
+                    Console.WriteLine("Qual valor a ser Transferido?");
+                    Console.Write($"R$: ");
+                    double valor = double.Parse(Console.ReadLine());
+
+                    Console.WriteLine("-----------------");
+                }
+
+
+            }
+        }
+
 
         public static void Main(string[] args)
         {
@@ -155,10 +173,10 @@ namespace ByteBank1
 
             do
             {
-                ShowMenu();
+                MostrarOpcoes();
                 option = int.Parse(Console.ReadLine());
 
-                Console.WriteLine("-----------------");
+                Console.WriteLine("--------------------");
 
                 switch (option)
                 {
@@ -172,7 +190,7 @@ namespace ByteBank1
                         DeletarUsuario(cpfs, titulares, senhas, saldos);
                         break;
                     case 3:
-                        ListarTodasAsContas(cpfs, titulares, saldos);
+                        ListarContas(cpfs, titulares, saldos);
                         break;
                     case 4:
                         ApresentarUsuario(cpfs, titulares, saldos);
@@ -181,13 +199,14 @@ namespace ByteBank1
                         ApresentarValorAcumulado(saldos);
                         break;
                     case 6:
-                        ManipularConta(cpfs, titulares, saldos);
+                        ManipularConta(cpfs, titulares, senhas, saldos);
                         break;
 
-                    
+
+
                 }
 
-                Console.WriteLine("-----------------");
+                Console.WriteLine("--------------------");
 
             } while (option != 0);
 
